@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: Lambda with spring boot.
 
 Resources:
-  LambdaSpringBootFunction:
+  LambdaSpringBootTestCodeDeployFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: com.keyholesoftware.lambda.LambdaHandler::handleRequest
@@ -16,8 +16,8 @@ Resources:
         GetResource:
           Type: Api
           Properties:
-            Path: /{proxy+}
-            Method: any
+            Path: /languages
+            Method: get
 
 Outputs:
   LambdaSpringBootApi:
@@ -25,3 +25,4 @@ Outputs:
     Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/languages'
     Export:
       Name: LambdaSpringBootApi
+

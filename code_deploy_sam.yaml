@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A sample SAM template for deploying Lambda functions.
+
+Resources:
+  # Details about the myDateTimeFunction Lambda function
+  LambdaSpringBootTestCodeDeployFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.keyholesoftware.lambda.LambdaHandler::handleRequest
+      Runtime: java8
+      CodeUri: target/spring-boot-lambda-1.0.0-SNAPSHOT.jar
+      MemorySize: 1512
+      # Instructs your myDateTimeFunction is published to an alias named "live".
+      AutoPublishAlias: live
+      # Grants this function permission to call lambda:InvokeFunction
+      Timeout: 180
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "lambda:InvokeFunction"
+              Resource: '*'
+      Events:
+        GetResource:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /languages
+            Method: get
+      DeploymentPreference:
+        #Specifies the deployment configuration
+        Type: AllAtOnce
+
+
+Outputs:
+  LambdaSpringBootApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/languages'
+    Export:
+      Name: LambdaSpringBootApi
